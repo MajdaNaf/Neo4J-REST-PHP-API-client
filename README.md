@@ -18,19 +18,14 @@
 * Traversal access
 * Indexing
 * Prevent multiple copies of the same node or relationship object (implement cache in load node and load relationship)
-* Replace HTTP Helper with a pluggable implementation, possible a standard
-*    library that already exists.
+* Replace HTTP Helper with a pluggable implementation, possible a standard library that already exists.
 
 ## Getting started ##
 
 * Download the latest version (1.3) of the Neo4j Server (tested on Community Edition)
-*
 * Run it
-* php demo.php
-*
-* Or better, run and examine the tests using phpunit (version 3.5.13) or 
-* using phing to build the enther project including documentation.
-
+* `php examples\demo.php`
+* Or better, run and examine the tests using phpunit (version 3.5.13) or using phing to build the enther project including documentation.
 
 ## Requirements ##
 
