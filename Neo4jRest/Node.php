@@ -169,6 +169,17 @@ class Node extends PropertyContainer
 		return $paths;
 	}	
 
+	/**
+	 * Returns a single path connecting this node and the toNode.
+	 *  
+	 * @param Neo4jRest\Node $toNode
+	 * @param integer $maxDepth
+	 * @param Neo4jRest\RelationshipDescription $relationships
+	 * @param string $algorithm
+	 * 
+	 * @return Neo4jRest\Path
+	 * 
+	 */
 	public function findPath(Node $toNode, $maxDepth=null, 
 	    RelationshipDescription $relationships=null, 
 	    $algorithm='allSimplePaths')

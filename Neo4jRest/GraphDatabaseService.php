@@ -22,13 +22,13 @@ class GraphDatabaseService
 {
 	public $base_uri;
 	
-	protected $httpHelper;
+//	public $httpHelper;
 	protected $indexManager;
 	
 	public function __construct($base_uri)
 	{
 		 $this->base_uri = $base_uri;
-		 $this->helper = new HttpHelper;
+//		 $this->httpHelper = new HttpHelper;
        $this->indexManager = new IndexManager($this); 
 	}
 	
@@ -36,7 +36,7 @@ class GraphDatabaseService
 	{
 		$uri = $this->base_uri.'node/'.$node_id;
 		
-		list($response, $http_code) = $this->helper->jsonGetRequest($uri);
+		list($response, $http_code) = HttpHelper::jsonGetRequest($uri);
 
 		switch ($http_code)
 		{

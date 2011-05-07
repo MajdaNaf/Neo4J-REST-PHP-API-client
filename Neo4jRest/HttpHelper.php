@@ -14,6 +14,7 @@ class HttpHelper
 	const POST = 'POST';
 	const PUT = 'PUT';
 	const DELETE = 'DELETE';
+	public static $ch = NULL;
 	
 	/**
 	 * A general purpose HTTP request method
@@ -26,16 +27,20 @@ class HttpHelper
 	 *
 	 * @return void
 	 */
-	public function request($url, $method='GET', $post_data='', $content_type='', $accept_type='')
+	public function request($url, $method='GET', $post_data='', 
+	   $content_type='', $accept_type='')
 	{
 		// Uncomment for debugging
 		//echo 'HTTP: ', $method, " : " ,$url , " : ", $post_data, "\n";
 		
-		$ch = curl_init();
+	   if (self::$ch == NULL) {
+		   self::$ch = curl_init();
+	   }
+	   $ch = self::$ch;
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE); 
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION,1);
+//		curl_setopt($ch, CURLOPT_FOLLOWLOCATION,1);
 
 		//if ($method==self::POST){
 		//	curl_setopt($ch, CURLOPT_POST, true); 
@@ -64,7 +69,7 @@ class HttpHelper
 
 		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-		curl_close($ch);
+//		curl_close($ch);
 
 		return array($response, $http_code);
 	}
