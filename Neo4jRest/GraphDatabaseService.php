@@ -113,7 +113,7 @@ class GraphDatabaseService
 	{
 		$uri = $this->base_uri . 'relationship/' . $id;
 		
-		list($response, $http_code) = $this->helper->jsonGetRequest($uri);
+		list($response, $http_code) = HttpHelper::jsonGetRequest($uri);
 
 		switch ($http_code)
 		{

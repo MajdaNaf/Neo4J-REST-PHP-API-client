@@ -35,8 +35,13 @@ class IndexManager
       
       list($response, $http_code) = HttpHelper::jsonGetRequest($uri);
       
-      if ($http_code != 200) throw new Neo4jRest_HttpException($http_code);
+      if ($http_code != 200 && $http_code != 204) 
+          throw new Neo4jRest_HttpException($http_code);
 			
+      if (empty($response)) {
+          $response = array();
+      }
+      
       return $response;
    } 
    	

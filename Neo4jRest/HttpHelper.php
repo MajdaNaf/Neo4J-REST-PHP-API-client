@@ -30,9 +30,10 @@ class HttpHelper
 	public function request($url, $method='GET', $post_data='', 
 	   $content_type='', $accept_type='')
 	{
-		// Uncomment for debugging
-		//echo 'HTTP: ', $method, " : " ,$url , " : ", $post_data, "\n";
-		
+	    
+// Uncomment for debugging
+//echo 'HTTP: ', $method, " : " ,$url , " : ", $post_data, "\n";
+	    
 	   if (self::$ch == NULL) {
 		   self::$ch = curl_init();
 	   }
@@ -61,6 +62,8 @@ class HttpHelper
 						);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers); 
 		}
+		
+		
 		
 //      trigger_error('$url: ' . print_r($url,true) . ', $post_data' . 
 //         print_r($post_data, true), E_USER_NOTICE);		

@@ -23,7 +23,8 @@ class Node extends PropertyContainer
 	{
 		if (!$this->_is_new) 
 		{
-			list($response, $http_code) = HttpHelper::deleteRequest($this->getUri());
+			list($response, $http_code) = 
+			    HttpHelper::deleteRequest($this->getUri());
 			
 			if ($http_code!=204) throw new Neo4jRest_HttpException($http_code);
 			
@@ -217,5 +218,87 @@ class Node extends PropertyContainer
 	   return $path;
 		
 	}
+	
+	/**
+	 * 
+	 * Visits other nodes, starting from this node and based on traversal rules.
+	 * 
+	 * Modeled directly from the neo4j java API so please see those docs for 
+	 * more information
+	 * 
+	 * @TODO - need to support the uniqueness parameter which is available on 
+	 * 	the REST API.
+	 * 
+	 * @param string $traversalOrder Use the constants defined in the 
+	 * 	TraverserOrder object.  E.g. TraverserOrder::DEPTH_FIRST
+	 * @param string $stopEvaluator javascript that determines if the traversal
+	 * 	should stop at this Node.
+	 * @param string $returnFilter determines which nodes should be included in
+	 * 	the returned list.  Use the TraverserReturnFilter object for 
+	 *    the valid string values.
+	 * @param RelationshipDescription $relationshipTypesandDirections a list of 
+	 * 	relationship type and direction pairs used to determine which edges 
+	 *    to follow.
+	 * @param integer $maxdepth A shorthand way of specifying a stop evaluator
+	 * 	which stops after a certain depth.
+	 * @param string $returnType either 'node', 'relationship', or 'path'.
+	 * 
+	 * @return array depends on the $returnType parameters.  Either a list of
+	 * 	nodes, relationships, or paths.
+	 * 
+	 */
+    function traverse($traversalOrder=TraverserOrder::DEPTH_FIRST, 
+        $maxDepth=null, 
+        $stopEvaluator=null, 
+	     $returnFilter=null, 
+	     RelationshipDescription $relationshipTypesAndDirections=null,
+	     $returnType='node') {
+	        	        	        
+        $data['order'] = $traversalOrder;
+        
+        if ($relationshipTypesAndDirections) {
+           $data['relationships'] = $relationshipTypesAndDirections->get();
+        }
+        
+        if ($stopEvaluator) {
+           $data['prune evaluator'] = array( 'language' => 'javascript',
+               'body' => $stopEvaluator);
+        }
+        
+        if ($returnFilter) {
+           $data['return filter'] = array( 'language' => 'builtin', 
+               'name' => $returnFilter);
+        }
+        
+        if ($maxDepth) { 
+            $data['max depth'] = $maxDepth;
+        }
+        
+        $uri = $this->getUri().'/traverse/' . $returnType;
+      
+        list($response, $http_code) = HTTPHelper::jsonPostRequest(
+            $uri, $data);
+        
+        if ($http_code!=200) {
+            throw new Neo4jRest_HttpException("http code: " . 
+                $http_code . ", response: " . print_r($response, true), 
+                $http_code
+            );
+        }
+        
+        $results = array();
+        foreach($response as $result)
+        {
+        		$results[] = Node::inflateFromResponse($this->_neo_db, $result);	
+        }
+        
+        // TODO: Needed?  Shouldn't we get exception from above?  REST API
+        //     docs are not clear.
+        if (empty($results)) {
+            throw new Neo4jRest_NotFoundException("Response was empty.", 404);
+        }
+		
+        return $results;
+    }
 	
 }

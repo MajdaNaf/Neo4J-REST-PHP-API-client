@@ -19,3 +19,5 @@ require_once 'Neo4jRest/RelationshipIndex.php';
 require_once 'Neo4jRest/Path.php';
 require_once 'Neo4jRest/RelationshipDescription.php';
 require_once 'Neo4jRest/RelationshipDirection.php';
+require_once 'Neo4jRest/TraverserOrder.php';
+require_once 'Neo4jRest/TraverserReturnFilter.php';

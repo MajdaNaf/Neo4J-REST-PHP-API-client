@@ -29,7 +29,8 @@ class GraphDatabaseServiceTest extends Neo4jRestTestCase
           $response = $this->graphDb->getRoot();
        }
        catch (Neo4jRest_HttpException $e) {
-          $this->fail('Caught exception: ' . $e);
+          $this->fail('Make sure neo4jd service is running. Caught ' . 
+          	'exception: ' . $e);
        }
           
        $this->assertInternalType('array', $response);
