@@ -1,7 +1,7 @@
 # Neo4J PHP REST API client #
 
 * Complete implementation of the [Neo4J REST API](http://components.neo4j.org/neo4j-server/stable/rest.html) except Traversal.
-* Based on Neo4j 1.3 Server which includes a breaking change in the index management.
+* Based on Neo4j 1.4 Server which includes a breaking change in the index management.
 * Complete set of unit tests
 
 ## Features ##
@@ -20,7 +20,7 @@
 
 ## Getting started ##
 
-* Download the latest version (1.3) of the [Neo4j Server](http://neo4j.org/) (tested on Community Edition) and follow the installation instructions.
+* Download the latest version (1.4) of the [Neo4j Server](http://neo4j.org/) (tested on Community Edition) and follow the installation instructions.
 * Run it
 * `php examples\demo.php`
 * Or better, run and examine the tests using phpunit (version 3.5.13) or using phing to build the enther project including documentation.
