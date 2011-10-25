@@ -6,6 +6,8 @@
  * @package Neo4jRest
  */
 
+namespace Neo4jRest;
+
 /**
  * Include the API PHP file
  */
