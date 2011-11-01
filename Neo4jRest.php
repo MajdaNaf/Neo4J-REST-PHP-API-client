@@ -21,3 +21,4 @@ require_once 'Neo4jRest/RelationshipDescription.php';
 require_once 'Neo4jRest/RelationshipDirection.php';
 require_once 'Neo4jRest/TraverserOrder.php';
 require_once 'Neo4jRest/TraverserReturnFilter.php';
+require_once 'Neo4jRest/TraverserUniquenessFilter.php';

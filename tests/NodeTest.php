@@ -7,6 +7,7 @@
 
 require_once 'Neo4jRestTestCase.php';
 
+use Neo4jRest\TraverserUniquenessFilter;
 use Neo4jRest\TraverserReturnFilter;
 use Neo4jRest\TraverserOrder;
 use Neo4jRest\Neo4jRest_HttpException as Neo4jRest_HttpException; 
@@ -464,7 +465,27 @@ class NodeTest extends Neo4jRestTestCase
 
         // TODO: Tests for return types other than node.
         
+        // Tests the uniqueness filter
+        $nodes = $node->traverse(TraverserOrder::DEPTH_FIRST, $maxDepth,
+            null, TraverserReturnFilter::ALL, null, 'node', TraverserUniquenessFilter::RELATIONSHIP_GLOBAL); 
+        $this->assertEquals($node, $nodes[0]);
         
+        $nodes = $node->traverse(TraverserOrder::DEPTH_FIRST, $maxDepth,
+            null, TraverserReturnFilter::ALL, null, 'node', TraverserUniquenessFilter::RELATIONSHIP_PATH); 
+        $this->assertEquals($node, $nodes[0]);
+        
+        $nodes = $node->traverse(TraverserOrder::DEPTH_FIRST, $maxDepth,
+            null, TraverserReturnFilter::ALL, null, 'node', TraverserUniquenessFilter::NODE_GLOBAL); 
+        $this->assertEquals($node, $nodes[0]);
+        
+        $nodes = $node->traverse(TraverserOrder::DEPTH_FIRST, $maxDepth,
+            null, TraverserReturnFilter::ALL, null, 'node', TraverserUniquenessFilter::NODE_PATH); 
+        $this->assertEquals($node, $nodes[0]);
+        
+        $nodes = $node->traverse(TraverserOrder::DEPTH_FIRST, $maxDepth,
+            null, TraverserReturnFilter::ALL, null, 'node', TraverserUniquenessFilter::NONE); 
+        $this->assertEquals($node, $nodes[0]);
+
         // Cleanup. $node is automatically cleaned up.
         $rel->delete();
         $rel2->delete();

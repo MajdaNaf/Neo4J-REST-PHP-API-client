@@ -11,7 +11,7 @@
 namespace Neo4jRest;
 
 class TraverserOrder {
-	const BREADTH_FIRST = 'breadth first';
-	const DEPTH_FIRST = 'depth first';
+	const BREADTH_FIRST = 'breadth_first';
+	const DEPTH_FIRST = 'depth_first';
 		
 }

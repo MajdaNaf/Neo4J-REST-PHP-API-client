@@ -226,9 +226,6 @@ class Node extends PropertyContainer
 	 * Modeled directly from the neo4j java API so please see those docs for 
 	 * more information
 	 * 
-	 * @TODO - need to support the uniqueness parameter which is available on 
-	 * 	the REST API.
-	 * 
 	 * @param string $traversalOrder Use the constants defined in the 
 	 * 	TraverserOrder object.  E.g. TraverserOrder::DEPTH_FIRST
 	 * @param string $stopEvaluator javascript that determines if the traversal
@@ -242,7 +239,8 @@ class Node extends PropertyContainer
 	 * @param integer $maxdepth A shorthand way of specifying a stop evaluator
 	 * 	which stops after a certain depth.
 	 * @param string $returnType either 'node', 'relationship', or 'path'.
-	 * 
+	 * @param string $uniquness 
+         * 
 	 * @return array depends on the $returnType parameters.  Either a list of
 	 * 	nodes, relationships, or paths.
 	 * 
@@ -252,7 +250,8 @@ class Node extends PropertyContainer
         $stopEvaluator=null, 
 	     $returnFilter=null, 
 	     RelationshipDescription $relationshipTypesAndDirections=null,
-	     $returnType='node') {
+	     $returnType='node',
+             $uniqueness=TraverserUniquenessFilter::NONE) {
 	        	        	        
         $data['order'] = $traversalOrder;
         
@@ -261,24 +260,26 @@ class Node extends PropertyContainer
         }
         
         if ($stopEvaluator) {
-           $data['prune evaluator'] = array( 'language' => 'javascript',
+           $data['prune_evaluator'] = array( 'language' => 'javascript',
                'body' => $stopEvaluator);
         }
         
         if ($returnFilter) {
-           $data['return filter'] = array( 'language' => 'builtin', 
+           $data['return_filter'] = array( 'language' => 'builtin', 
                'name' => $returnFilter);
         }
         
         if ($maxDepth) { 
-            $data['max depth'] = $maxDepth;
+            $data['max_depth'] = $maxDepth;
         }
+        
+        $data['uniqueness'] = $uniqueness;
         
         $uri = $this->getUri().'/traverse/' . $returnType;
       
         list($response, $http_code) = HTTPHelper::jsonPostRequest(
             $uri, $data);
-        
+
         if ($http_code!=200) {
             throw new Neo4jRest_HttpException("http code: " . 
                 $http_code . ", response: " . print_r($response, true), 
