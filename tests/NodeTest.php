@@ -9,6 +9,7 @@ require_once 'Neo4jRestTestCase.php';
 
 use Neo4jRest\TraverserUniquenessFilter;
 use Neo4jRest\TraverserReturnFilter;
+use Neo4jRest\TraverserReturnType;
 use Neo4jRest\TraverserOrder;
 use Neo4jRest\Neo4jRest_HttpException as Neo4jRest_HttpException; 
 use Neo4jRest\Neo4jRest_NotFoundException as Neo4jRest_NotFoundException;
@@ -467,25 +468,41 @@ class NodeTest extends Neo4jRestTestCase
         
         // Tests the uniqueness filter
         $nodes = $node->traverse(TraverserOrder::DEPTH_FIRST, $maxDepth,
-            null, TraverserReturnFilter::ALL, null, 'node', TraverserUniquenessFilter::RELATIONSHIP_GLOBAL); 
+            null, TraverserReturnFilter::ALL, null, TraverserReturnType::NODE, 
+                TraverserUniquenessFilter::RELATIONSHIP_GLOBAL);
         $this->assertEquals($node, $nodes[0]);
         
         $nodes = $node->traverse(TraverserOrder::DEPTH_FIRST, $maxDepth,
-            null, TraverserReturnFilter::ALL, null, 'node', TraverserUniquenessFilter::RELATIONSHIP_PATH); 
+            null, TraverserReturnFilter::ALL, null, TraverserReturnType::NODE, 
+                TraverserUniquenessFilter::RELATIONSHIP_PATH); 
         $this->assertEquals($node, $nodes[0]);
         
         $nodes = $node->traverse(TraverserOrder::DEPTH_FIRST, $maxDepth,
-            null, TraverserReturnFilter::ALL, null, 'node', TraverserUniquenessFilter::NODE_GLOBAL); 
+            null, TraverserReturnFilter::ALL, null, TraverserReturnType::NODE, 
+                TraverserUniquenessFilter::NODE_GLOBAL); 
         $this->assertEquals($node, $nodes[0]);
         
         $nodes = $node->traverse(TraverserOrder::DEPTH_FIRST, $maxDepth,
-            null, TraverserReturnFilter::ALL, null, 'node', TraverserUniquenessFilter::NODE_PATH); 
+            null, TraverserReturnFilter::ALL, null, TraverserReturnType::NODE, 
+                TraverserUniquenessFilter::NODE_PATH); 
         $this->assertEquals($node, $nodes[0]);
         
         $nodes = $node->traverse(TraverserOrder::DEPTH_FIRST, $maxDepth,
-            null, TraverserReturnFilter::ALL, null, 'node', TraverserUniquenessFilter::NONE); 
+            null, TraverserReturnFilter::ALL, null, TraverserReturnType::NODE, 
+                TraverserUniquenessFilter::NONE); 
         $this->assertEquals($node, $nodes[0]);
-
+        
+        // Tests the paged traverser
+        $nodes = $node->pagedTraverse(TraverserOrder::DEPTH_FIRST, $maxDepth,
+            null, TraverserReturnFilter::ALL, null, TraverserReturnType::NODE, 
+                TraverserUniquenessFilter::NONE);
+        $this->assertEquals(1, count($nodes));
+        
+        $nodes = $node->pagedTraverse(TraverserOrder::DEPTH_FIRST, $maxDepth,
+            null, TraverserReturnFilter::ALL, null, TraverserReturnType::NODE, 
+                TraverserUniquenessFilter::NONE, 2);
+        $this->assertEquals(2, count($nodes));
+        
         // Cleanup. $node is automatically cleaned up.
         $rel->delete();
         $rel2->delete();

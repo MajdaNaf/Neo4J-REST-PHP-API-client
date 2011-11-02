@@ -250,7 +250,7 @@ class Node extends PropertyContainer
         $stopEvaluator=null, 
 	     $returnFilter=null, 
 	     RelationshipDescription $relationshipTypesAndDirections=null,
-	     $returnType='node',
+	     $returnType=TraverserReturnType::NODE,
              $uniqueness=TraverserUniquenessFilter::NONE) {
 	        	        	        
         $data['order'] = $traversalOrder;
@@ -301,5 +301,65 @@ class Node extends PropertyContainer
 		
         return $results;
     }
-	
+
+    function pagedTraverse($traversalOrder=TraverserOrder::DEPTH_FIRST, 
+        $maxDepth=null, 
+        $stopEvaluator=null, 
+	     $returnFilter=null, 
+	     RelationshipDescription $relationshipTypesAndDirections=null,
+	     $returnType=TraverserReturnType::NODE,
+             $uniqueness=TraverserUniquenessFilter::NONE,
+             $pageSize = 1,
+             $leaseTime = 1000/*Assuming milli-seconds here*/) {
+	        	        	        
+        $data['order'] = $traversalOrder;
+        
+        if ($relationshipTypesAndDirections) {
+           $data['relationships'] = $relationshipTypesAndDirections->get();
+        }
+        
+        if ($stopEvaluator) {
+           $data['prune_evaluator'] = array( 'language' => 'javascript',
+               'body' => $stopEvaluator);
+        }
+        
+        if ($returnFilter) {
+           $data['return_filter'] = array( 'language' => 'builtin', 
+               'name' => $returnFilter);
+        }
+        
+        if ($maxDepth) { 
+            $data['max_depth'] = $maxDepth;
+        }
+        
+       $data['uniqueness'] = $uniqueness;
+        
+        $uri = $this->getUri().'/paged/traverse/' . $returnType . 
+                '?pageSize=' . $pageSize . '&leaseTime=' . $leaseTime;
+      
+        list($response, $http_code) = HTTPHelper::jsonPostRequest(
+            $uri, $data);
+        
+        if ($http_code!=200 && $http_code!=201) {
+            throw new Neo4jRest_HttpException("http code: " . 
+                $http_code . ", response: " . print_r($response, true), 
+                $http_code
+            );
+        }
+        
+        $results = array();
+        foreach($response as $result)
+        {
+        		$results[] = Node::inflateFromResponse($this->_neo_db, $result);	
+        }
+        
+        // TODO: Needed?  Shouldn't we get exception from above?  REST API
+        //     docs are not clear.
+        if (empty($results)) {
+            throw new Neo4jRest_NotFoundException("Response was empty.", 404);
+        }
+		
+        return $results;
+    }    
+    
 }
